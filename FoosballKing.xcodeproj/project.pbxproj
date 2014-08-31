@@ -22,6 +22,10 @@
 		570B3BB219B26DB8006DDC56 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 570B3B9119B26DB7006DDC56 /* UIKit.framework */; };
 		570B3BBA19B26DB8006DDC56 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 570B3BB819B26DB8006DDC56 /* InfoPlist.strings */; };
 		570B3BBC19B26DB8006DDC56 /* FoosballKingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 570B3BBB19B26DB8006DDC56 /* FoosballKingTests.m */; };
+		576A4DDB19B2ACE40035A016 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 576A4DDA19B2ACE40035A016 /* Game.m */; };
+		576A4DDE19B2ACE50035A016 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 576A4DDD19B2ACE50035A016 /* Player.m */; };
+		57E640E019B278E10054CDEF /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 57E640DE19B278E10054CDEF /* Model.xcdatamodeld */; };
+		57E640E919B294F20054CDEF /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 57E640E819B294F20054CDEF /* DataManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +60,13 @@
 		570B3BB719B26DB8006DDC56 /* FoosballKingTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FoosballKingTests-Info.plist"; sourceTree = "<group>"; };
 		570B3BB919B26DB8006DDC56 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		570B3BBB19B26DB8006DDC56 /* FoosballKingTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FoosballKingTests.m; sourceTree = "<group>"; };
+		576A4DD919B2ACE40035A016 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Game.h; path = Data/Game.h; sourceTree = "<group>"; };
+		576A4DDA19B2ACE40035A016 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Game.m; path = Data/Game.m; sourceTree = "<group>"; };
+		576A4DDC19B2ACE50035A016 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Player.h; path = Data/Player.h; sourceTree = "<group>"; };
+		576A4DDD19B2ACE50035A016 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Player.m; path = Data/Player.m; sourceTree = "<group>"; };
+		57E640DF19B278E10054CDEF /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		57E640E719B294F20054CDEF /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataManager.h; path = Data/DataManager.h; sourceTree = "<group>"; };
+		57E640E819B294F20054CDEF /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataManager.m; path = Data/DataManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,10 +129,9 @@
 				570B3B9C19B26DB7006DDC56 /* AppDelegate.h */,
 				570B3B9D19B26DB7006DDC56 /* AppDelegate.m */,
 				570B3B9F19B26DB8006DDC56 /* Main.storyboard */,
-				570B3BA219B26DB8006DDC56 /* FirstViewController.h */,
-				570B3BA319B26DB8006DDC56 /* FirstViewController.m */,
-				570B3BA519B26DB8006DDC56 /* SecondViewController.h */,
-				570B3BA619B26DB8006DDC56 /* SecondViewController.m */,
+				57E640DA19B277EA0054CDEF /* Games */,
+				57E640D919B277DB0054CDEF /* Players */,
+				57E640D819B277B50054CDEF /* Data */,
 				570B3BA819B26DB8006DDC56 /* Images.xcassets */,
 				570B3B9419B26DB7006DDC56 /* Supporting Files */,
 			);
@@ -155,6 +165,38 @@
 				570B3BB819B26DB8006DDC56 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		57E640D819B277B50054CDEF /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				57E640E719B294F20054CDEF /* DataManager.h */,
+				57E640E819B294F20054CDEF /* DataManager.m */,
+				57E640DE19B278E10054CDEF /* Model.xcdatamodeld */,
+				576A4DD919B2ACE40035A016 /* Game.h */,
+				576A4DDA19B2ACE40035A016 /* Game.m */,
+				576A4DDC19B2ACE50035A016 /* Player.h */,
+				576A4DDD19B2ACE50035A016 /* Player.m */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		57E640D919B277DB0054CDEF /* Players */ = {
+			isa = PBXGroup;
+			children = (
+				570B3BA219B26DB8006DDC56 /* FirstViewController.h */,
+				570B3BA319B26DB8006DDC56 /* FirstViewController.m */,
+			);
+			name = Players;
+			sourceTree = "<group>";
+		};
+		57E640DA19B277EA0054CDEF /* Games */ = {
+			isa = PBXGroup;
+			children = (
+				570B3BA519B26DB8006DDC56 /* SecondViewController.h */,
+				570B3BA619B26DB8006DDC56 /* SecondViewController.m */,
+			);
+			name = Games;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,9 +295,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				576A4DDE19B2ACE50035A016 /* Player.m in Sources */,
 				570B3BA719B26DB8006DDC56 /* SecondViewController.m in Sources */,
 				570B3B9E19B26DB7006DDC56 /* AppDelegate.m in Sources */,
+				576A4DDB19B2ACE40035A016 /* Game.m in Sources */,
+				57E640E019B278E10054CDEF /* Model.xcdatamodeld in Sources */,
 				570B3BA419B26DB8006DDC56 /* FirstViewController.m in Sources */,
+				57E640E919B294F20054CDEF /* DataManager.m in Sources */,
 				570B3B9A19B26DB7006DDC56 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -461,6 +507,7 @@
 				570B3BC119B26DB8006DDC56 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		570B3BC219B26DB8006DDC56 /* Build configuration list for PBXNativeTarget "FoosballKingTests" */ = {
 			isa = XCConfigurationList;
@@ -469,8 +516,23 @@
 				570B3BC419B26DB8006DDC56 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		57E640DE19B278E10054CDEF /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				57E640DF19B278E10054CDEF /* Model.xcdatamodel */,
+			);
+			currentVersion = 57E640DF19B278E10054CDEF /* Model.xcdatamodel */;
+			name = Model.xcdatamodeld;
+			path = Data/Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 570B3B8219B26DB7006DDC56 /* Project object */;
 }

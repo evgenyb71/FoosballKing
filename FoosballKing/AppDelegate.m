@@ -7,11 +7,13 @@
 //
 
 #import "AppDelegate.h"
+#import "DataManager.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [DataManager sharedInstance]; // create DB
     // Override point for customization after application launch.
     return YES;
 }

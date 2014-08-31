@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Game" representedClassName="Game" syncable="YES">
+        <attribute name="date" attributeType="Date" syncable="YES"/>
+        <attribute name="gameId" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="player1Id" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="player1Score" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="player2Id" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="player2Score" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="Player" representedClassName="Player" syncable="YES">
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="photo" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="playerId" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="score" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Game" positionX="171" positionY="9" width="128" height="30"/>
+        <element name="Player" positionX="-36" positionY="9" width="128" height="28"/>
+    </elements>
+</model>
