@@ -21,6 +21,11 @@
 {
     [super viewDidLoad];
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(dataManagerPlayerListUpdatedEvent)
+                                                 name:DMPlayerListUpdateNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

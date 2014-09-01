@@ -9,6 +9,9 @@
 #import "Player.h"
 #import "Game.h"
 
+OBJC_EXPORT NSString * const DMPlayerListUpdateNotification;
+OBJC_EXPORT NSString * const DMPGameListUpdateNotification;
+
 // inform delegate of data related events
 @protocol DataManagerDelegateProtocol <NSObject>
 

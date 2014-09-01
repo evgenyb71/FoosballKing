@@ -20,6 +20,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(dataManagerGameListUpdatedEvent)
+                                                 name:DMPGameListUpdateNotification
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -9,6 +9,9 @@
 #import "DataManager.h"
 #import "CoreData/CoreData.h"
 
+NSString * const DMPlayerListUpdateNotification = @"DMPlayerListUpdateNotification";
+NSString * const DMPGameListUpdateNotification = @"DMPGameListUpdateNotification";
+
 NSString* const PlayerEntity = @"Player";
 NSString* const GameEntity = @"Game";
 
@@ -128,6 +131,10 @@ NSString* const GameEntity = @"Game";
     if ([self.delegate respondsToSelector:@selector(dataManagerPlayerListUpdatedEvent)]) {
         [self.delegate dataManagerPlayerListUpdatedEvent];
     }
+    // notify observers that are not active now
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:DMPlayerListUpdateNotification object:nil];
+    });
 }
 
 - (void)clearAllInMemoryGamesLists {
@@ -141,6 +148,13 @@ NSString* const GameEntity = @"Game";
     if ([self.delegate respondsToSelector:@selector(dataManagerPlayerListUpdatedEvent)]) {
         [self.delegate dataManagerPlayerListUpdatedEvent];
     }
+    // notify observers that are not active now
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:DMPGameListUpdateNotification object:nil];
+    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:DMPlayerListUpdateNotification object:nil];
+    });
 }
 
 - (void)buildRatedPlayersList {
@@ -331,5 +345,53 @@ NSString* const GameEntity = @"Game";
     }
     return [_playersById objectForKey:playerId];
 }
+
+
+#pragma mark - potential network code
+
+/*
+ 
+ // getting data from network
+ 
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    NSURL *url = [NSURL URLWithString:dataURL];
+    NSURLSession *urlSession = [NSURLSession sharedSession];
+    [[urlSession dataTaskWithURL:url
+               completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                   dispatch_async(dispatch_get_main_queue(), ^{
+                       // update on Main
+                       [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+                   });
+                   if (!error) {
+                       [self handleDataReceived:data response:response];
+                   } else {
+                       [self notifyOnError:error];
+                   }
+               }] resume];
+}
+
+// process data:
+ 
+- (void)handleDataReceived:(NSData *)data response:(NSURLResponse *)response {
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+    if (httpResponse.statusCode != 200) {
+        NSError *error = [NSError errorWithDomain:@"NETWORK" code:httpResponse.statusCode userInfo:nil];
+        [self notifyOnError:error];
+        return;
+    }
+    
+    // convert JSON response to dictionary or array
+    NSError *jsonError;
+    id dataJSON = [NSJSONSerialization JSONObjectWithData:data
+                                                  options:NSJSONReadingAllowFragments
+                                                    error:&jsonError];
+    if (jsonError) {
+        [self notifyOnError:jsonError];
+        return;
+    }
+    // parse Array or Dictionary
+}
+
+ */
 
 @end

@@ -17,11 +17,10 @@
  - 2 Tabs app
     - Players view: Rating, Add/edit/delete
     - Games view: History, add/edit
- -
+ - Use NSNotification instead of delegate for DataManager updates
  
  Feature set for v2:
  - Delete game? (not in requirements!)
- - Use NSNotification instead of delegate for DataManager updates
  - Search for players
  - Custom Player Cell with more info
  - Search for games
