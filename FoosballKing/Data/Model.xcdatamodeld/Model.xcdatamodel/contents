@@ -9,13 +9,13 @@
         <attribute name="player2Score" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="Player" representedClassName="Player" syncable="YES">
-        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="photo" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="playerId" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="score" attributeType="Integer 16" defaultValueString="0" indexed="YES" syncable="YES"/>
     </entity>
     <elements>
         <element name="Game" positionX="171" positionY="9" width="128" height="30"/>
-        <element name="Player" positionX="-36" positionY="9" width="128" height="28"/>
+        <element name="Player" positionX="-36" positionY="9" width="128" height="105"/>
     </elements>
 </model>

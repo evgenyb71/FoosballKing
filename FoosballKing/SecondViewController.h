@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+/*
+ This view controller (table view) handles presentation of games
+ */
 
-@interface SecondViewController : UIViewController
+@interface SecondViewController : UITableViewController
 
 @end

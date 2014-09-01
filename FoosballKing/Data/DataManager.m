@@ -16,6 +16,10 @@ NSString* const GameEntity = @"Game";
     NSPersistentStoreCoordinator *_persistentStoreCoordinator;
     NSManagedObjectContext *_managedObjectContext;
     NSManagedObjectModel *_managedObjectModel;
+    
+    NSArray *_ratedPlayers; // players, sorted by score
+    NSArray *_gamesByDate; // games, sorted by date
+    NSMutableDictionary *_playersById; // O(1) search for a player by Id
 }
 
 @end
@@ -61,9 +65,7 @@ NSString* const GameEntity = @"Game";
     _managedObjectContext = [[NSManagedObjectContext alloc] init];
     [_managedObjectContext setPersistentStoreCoordinator: _persistentStoreCoordinator];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self initWithDemoItemsIfNeeded];
-    });
+    [self initWithDemoItemsIfNeeded];
 }
 
 - (NSString *)applicationDocumentsDirectory {
@@ -88,15 +90,21 @@ NSString* const GameEntity = @"Game";
 - (void)initWithDemoItemsIfNeeded {
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:[NSEntityDescription entityForName:PlayerEntity inManagedObjectContext:_managedObjectContext]];
-    [request setIncludesSubentities:NO];
     NSError *err;
     NSUInteger count = [_managedObjectContext countForFetchRequest:request error:&err];
     if (count > 0)
         return;
-    Player *playerAmos = [self createPlayerRecord:@"Amos"];
-    Player *playerDiego = [self createPlayerRecord:@"Diego"];
-    Player *playerJoel = [self createPlayerRecord:@"Joel"];
-    Player *playerTim = [self createPlayerRecord:@"Tim"];
+    request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:GameEntity inManagedObjectContext:_managedObjectContext]];
+    count = [_managedObjectContext countForFetchRequest:request error:&err];
+    if (count > 0)
+        return;
+    // if we don't have any recotds in both DBs, recreate these:
+    Player *playerAmos = [self createPlayerRecordInternal:@"Amos"];
+    Player *playerDiego = [self createPlayerRecordInternal:@"Diego"];
+    Player *playerJoel = [self createPlayerRecordInternal:@"Joel"];
+    Player *playerTim = [self createPlayerRecordInternal:@"Tim"];
+    [self createPlayerRecordInternal:@"Eugene"]; // no games yet!
     
     [self createGameRecordPlayer1:playerAmos scoreForPlayer1:4 player2:playerDiego scoreForPlayer2:5];
     [self createGameRecordPlayer1:playerAmos scoreForPlayer1:1 player2:playerDiego scoreForPlayer2:5];
@@ -114,8 +122,74 @@ NSString* const GameEntity = @"Game";
     [self createGameRecordPlayer1:playerJoel scoreForPlayer1:5 player2:playerTim scoreForPlayer2:2];
 }
 
+- (void)clearAllInMemoryPlayerLists {
+    _ratedPlayers = nil;
+    _playersById = nil;
+    if ([self.delegate respondsToSelector:@selector(dataManagerPlayerListUpdatedEvent)]) {
+        [self.delegate dataManagerPlayerListUpdatedEvent];
+    }
+}
+
+- (void)clearAllInMemoryGamesLists {
+    _gamesByDate = nil;
+    // we need to reload players too
+    _ratedPlayers = nil;
+    _playersById = nil;
+    if ([self.delegate respondsToSelector:@selector(dataManagerGameListUpdatedEvent)]) {
+        [self.delegate dataManagerGameListUpdatedEvent];
+    }
+    if ([self.delegate respondsToSelector:@selector(dataManagerPlayerListUpdatedEvent)]) {
+        [self.delegate dataManagerPlayerListUpdatedEvent];
+    }
+}
+
+- (void)buildRatedPlayersList {
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    // look for all players
+    [request setEntity:[NSEntityDescription entityForName:PlayerEntity inManagedObjectContext:_managedObjectContext]];
+    // sort them by score
+	NSSortDescriptor *sortDescScore = [[NSSortDescriptor alloc] initWithKey:@"score" ascending:NO];
+	NSSortDescriptor *sortDescName = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+	NSArray *sortDescriptors = @[sortDescScore, sortDescName];
+	[request setSortDescriptors:sortDescriptors];
+	NSError* error = nil;
+	_ratedPlayers = [_managedObjectContext executeFetchRequest: request error: &error];
+
+    // rebuild quick access hashtable
+    _playersById = [NSMutableDictionary dictionaryWithCapacity:[_ratedPlayers count]];
+    for (Player *player in _ratedPlayers) {
+        [_playersById setObject:player forKey:player.playerId];
+    }
+}
+
+- (void)buildGamesByDateList {
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    // look for all players
+    [request setEntity:[NSEntityDescription entityForName:GameEntity inManagedObjectContext:_managedObjectContext]];
+    // sort them by score
+	NSSortDescriptor *sortDesc = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
+	NSArray *sortDescriptors = @[sortDesc];
+	[request setSortDescriptors:sortDescriptors];
+	NSError* error = nil;
+	_gamesByDate = [_managedObjectContext executeFetchRequest: request error: &error];
+}
+
 #pragma mark - public access
-- (Player *)createPlayerRecord:(NSString *)name {
+- (Player *)findThePlayer:(NSString *)name {
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:PlayerEntity inManagedObjectContext:_managedObjectContext]];
+	NSPredicate *pred = [NSPredicate predicateWithFormat:@"(name = %@)", name];
+    [request setPredicate:pred];
+
+    NSError* error = nil;
+    NSArray* result = [_managedObjectContext executeFetchRequest:request error:&error];
+    if (result && [result count] == 1) {
+        return (Player *)[result objectAtIndex:0];
+    }
+    return nil;
+}
+
+- (Player *)createPlayerRecordInternal:(NSString *)name {
 	Player *player = (Player *)[NSEntityDescription insertNewObjectForEntityForName:PlayerEntity inManagedObjectContext:_managedObjectContext];
     player.name = name;
     player.playerId =  [[NSUUID UUID] UUIDString];
@@ -125,19 +199,137 @@ NSString* const GameEntity = @"Game";
     return nil;
 }
 
-- (Game *)createGameRecordPlayer1:(Player *)player1 scoreForPlayer1:(NSInteger)score1 player2:(Player *)player2 scoreForPlayer2:(NSInteger)score2 {
+- (Player *)createPlayerRecord:(NSString *)name {
+    // check if player exists
+    Player *player = [self findThePlayer:name];
+    if (player)
+        return nil;
+	player = [self createPlayerRecordInternal:name];
+    if (player) {
+        [self clearAllInMemoryPlayerLists];
+    }
+    return player;
+}
+
+- (BOOL)updatePlayerRecord:(Player *)player1 newName:(NSString *)newName {
+    Player *player = [self findThePlayer:newName];
+    if (player) {
+        return NO; // we already have player with new name
+    }
+    player1.name = newName;
+    if ([self persistCoreDataChanges] == NO) {
+        return NO;
+    }
+    [self clearAllInMemoryPlayerLists];
+    return YES;
+}
+
+- (BOOL)deletePlayerRecord:(Player *)player {
+    // first, let's see if we have any games for this player
+	NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:[NSEntityDescription entityForName:GameEntity inManagedObjectContext:_managedObjectContext]];
+	NSPredicate *pred = [NSPredicate predicateWithFormat:@"(player1Id = %@) OR (player2Id = %@)", player.playerId, player.playerId];
+    [request setPredicate:pred];
+    
+    NSError *err;
+    NSUInteger count = [_managedObjectContext countForFetchRequest:request error:&err];
+    if (count > 0)
+        return NO;
+
+    // No games - we're Ok to delete
+    [_managedObjectContext deleteObject:player];
+    if ([self persistCoreDataChanges] == NO) {
+        return NO;
+    }
+    [self clearAllInMemoryPlayerLists];
+    return YES;
+}
+
+- (Game *)createGameRecordPlayer1:(Player *)player1 scoreForPlayer1:(NSInteger)score1 player2:(Player *)player2 scoreForPlayer2:(NSInteger)score2
+{
+    return [self createGameRecordForDateInternal:[NSDate date] player1:player1 scoreForPlayer1:score1 player2:player2 scoreForPlayer2:score2];
+}
+
+- (Game *)createGameRecordForDateInternal:(NSDate *)date player1:(Player *)player1 scoreForPlayer1:(NSInteger)score1 player2:(Player *)player2 scoreForPlayer2:(NSInteger)score2 {
 	Game *game = (Game *)[NSEntityDescription insertNewObjectForEntityForName:GameEntity inManagedObjectContext:_managedObjectContext];
-    game.date = [NSDate date];
+    game.date = date;
     game.gameId =  [[NSUUID UUID] UUIDString];
     game.player1Id = player1.playerId;
-    game.player2Id = player1.playerId;
     game.player1Score = [NSNumber numberWithInteger:score1];
+    
+    game.player2Id = player2.playerId;
     game.player2Score = [NSNumber numberWithInteger:score2];
+    
+    // update scores for players
+    player1.score = [NSNumber numberWithInteger: [player1.score integerValue] + score1];
+    player2.score = [NSNumber numberWithInteger: [player2.score integerValue] + score2];
     
     if ([self persistCoreDataChanges] == YES) {
         return game;
     }
     return nil;
+}
+
+- (Game *)createGameRecordForDate:(NSDate *)date player1:(Player *)player1 scoreForPlayer1:(NSInteger)score1 player2:(Player *)player2 scoreForPlayer2:(NSInteger)score2 {
+    Game *game = [self createGameRecordForDateInternal:date player1:player1 scoreForPlayer1:score1 player2:player2 scoreForPlayer2:score2];
+    if (game != nil) {
+        [self clearAllInMemoryGamesLists];
+    }
+    return game;
+}
+
+- (BOOL)updateGameRecord:(Game *)game date:(NSDate *)date player1:(Player *)player1 scoreForPlayer1:(NSInteger)score1 player2:(Player *)player2 scoreForPlayer2:(NSInteger)score2
+{
+    if ([game.player1Id isEqualToString:player1.playerId] == NO) {
+        // subtract score from tjhe player we had before
+        Player *oldPlayer = [self playerById:game.player1Id];
+        oldPlayer.score = [NSNumber numberWithInteger: [oldPlayer.score integerValue] - [game.player1Score integerValue]];
+        player1.score = [NSNumber numberWithInteger: [player1.score integerValue] + score1];
+    } else {
+        player1.score = [NSNumber numberWithInteger: [player1.score integerValue] - [game.player1Score integerValue] + score1];
+    }
+    if ([game.player2Id isEqualToString:player2.playerId] == NO) {
+        // subtract score from tjhe player we had before
+        Player *oldPlayer = [self playerById:game.player2Id];
+        oldPlayer.score = [NSNumber numberWithInteger: [oldPlayer.score integerValue] - [game.player2Score integerValue]];
+    } else {
+        player2.score = [NSNumber numberWithInteger: [player2.score integerValue] - [game.player2Score integerValue] + score2];
+    }
+    game.date = date;
+
+    game.player1Id = player1.playerId;
+    game.player1Score = [NSNumber numberWithInteger:score1];
+    
+    game.player2Id = player2.playerId;
+    game.player2Score = [NSNumber numberWithInteger:score2];
+    
+    if ([self persistCoreDataChanges] == NO) {
+        return NO;
+    }
+    [self clearAllInMemoryGamesLists];
+    return YES;
+}
+
+#pragma mark - data access wrappers
+- (NSArray *)ratedPlayers {
+    if (_ratedPlayers == nil) {
+        [self buildRatedPlayersList];
+    }
+    return _ratedPlayers;
+}
+
+- (NSArray *)gamesByDate {
+    if (_gamesByDate == nil) {
+        [self buildGamesByDateList];
+    }
+    return _gamesByDate;
+}
+
+- (Player *)playerById:(NSString *)playerId {
+    if (_playersById == nil) {
+        [self buildRatedPlayersList];
+    }
+    return [_playersById objectForKey:playerId];
 }
 
 @end

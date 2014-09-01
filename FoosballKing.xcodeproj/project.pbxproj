@@ -24,6 +24,9 @@
 		570B3BBC19B26DB8006DDC56 /* FoosballKingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 570B3BBB19B26DB8006DDC56 /* FoosballKingTests.m */; };
 		576A4DDB19B2ACE40035A016 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 576A4DDA19B2ACE40035A016 /* Game.m */; };
 		576A4DDE19B2ACE50035A016 /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 576A4DDD19B2ACE50035A016 /* Player.m */; };
+		5786E70D19B3B29100C8572C /* AddPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5786E70C19B3B29100C8572C /* AddPlayerViewController.m */; };
+		5786E71019B3CFDA00C8572C /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5786E70F19B3CFDA00C8572C /* Utils.m */; };
+		5786E71319B3E3DE00C8572C /* GameInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5786E71219B3E3DE00C8572C /* GameInfoViewController.m */; };
 		57E640E019B278E10054CDEF /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 57E640DE19B278E10054CDEF /* Model.xcdatamodeld */; };
 		57E640E919B294F20054CDEF /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 57E640E819B294F20054CDEF /* DataManager.m */; };
 /* End PBXBuildFile section */
@@ -64,6 +67,12 @@
 		576A4DDA19B2ACE40035A016 /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Game.m; path = Data/Game.m; sourceTree = "<group>"; };
 		576A4DDC19B2ACE50035A016 /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Player.h; path = Data/Player.h; sourceTree = "<group>"; };
 		576A4DDD19B2ACE50035A016 /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Player.m; path = Data/Player.m; sourceTree = "<group>"; };
+		5786E70B19B3B29100C8572C /* AddPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddPlayerViewController.h; sourceTree = "<group>"; };
+		5786E70C19B3B29100C8572C /* AddPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddPlayerViewController.m; sourceTree = "<group>"; };
+		5786E70E19B3CFDA00C8572C /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		5786E70F19B3CFDA00C8572C /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		5786E71119B3E3DE00C8572C /* GameInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameInfoViewController.h; sourceTree = "<group>"; };
+		5786E71219B3E3DE00C8572C /* GameInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameInfoViewController.m; sourceTree = "<group>"; };
 		57E640DF19B278E10054CDEF /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		57E640E719B294F20054CDEF /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataManager.h; path = Data/DataManager.h; sourceTree = "<group>"; };
 		57E640E819B294F20054CDEF /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DataManager.m; path = Data/DataManager.m; sourceTree = "<group>"; };
@@ -133,6 +142,8 @@
 				57E640D919B277DB0054CDEF /* Players */,
 				57E640D819B277B50054CDEF /* Data */,
 				570B3BA819B26DB8006DDC56 /* Images.xcassets */,
+				5786E70E19B3CFDA00C8572C /* Utils.h */,
+				5786E70F19B3CFDA00C8572C /* Utils.m */,
 				570B3B9419B26DB7006DDC56 /* Supporting Files */,
 			);
 			path = FoosballKing;
@@ -186,6 +197,8 @@
 			children = (
 				570B3BA219B26DB8006DDC56 /* FirstViewController.h */,
 				570B3BA319B26DB8006DDC56 /* FirstViewController.m */,
+				5786E70B19B3B29100C8572C /* AddPlayerViewController.h */,
+				5786E70C19B3B29100C8572C /* AddPlayerViewController.m */,
 			);
 			name = Players;
 			sourceTree = "<group>";
@@ -195,6 +208,8 @@
 			children = (
 				570B3BA519B26DB8006DDC56 /* SecondViewController.h */,
 				570B3BA619B26DB8006DDC56 /* SecondViewController.m */,
+				5786E71119B3E3DE00C8572C /* GameInfoViewController.h */,
+				5786E71219B3E3DE00C8572C /* GameInfoViewController.m */,
 			);
 			name = Games;
 			sourceTree = "<group>";
@@ -296,7 +311,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				576A4DDE19B2ACE50035A016 /* Player.m in Sources */,
+				5786E71319B3E3DE00C8572C /* GameInfoViewController.m in Sources */,
 				570B3BA719B26DB8006DDC56 /* SecondViewController.m in Sources */,
+				5786E70D19B3B29100C8572C /* AddPlayerViewController.m in Sources */,
+				5786E71019B3CFDA00C8572C /* Utils.m in Sources */,
 				570B3B9E19B26DB7006DDC56 /* AppDelegate.m in Sources */,
 				576A4DDB19B2ACE40035A016 /* Game.m in Sources */,
 				57E640E019B278E10054CDEF /* Model.xcdatamodeld in Sources */,

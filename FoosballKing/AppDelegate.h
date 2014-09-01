@@ -12,17 +12,22 @@
  Feature set for v1:
  - local CoreData:
     - Players table
+        - Simple cell.
     - Games table
  - 2 Tabs app
     - Players view: Rating, Add/edit/delete
-    - Games view: History, add/edit/delete
+    - Games view: History, add/edit
  -
  
  Feature set for v2:
+ - Delete game? (not in requirements!)
+ - Use NSNotification instead of delegate for DataManager updates
  - Search for players
+ - Custom Player Cell with more info
  - Search for games
  - Support Notes for a player? (research)
  - Support Notes for a game? (research)
+ - List of all games -> Player Info
  - Cloud storage
     - support server APIs for:
         - get players
